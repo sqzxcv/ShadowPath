@@ -422,6 +422,8 @@
 		B8EAC6511D40D01C0046963C /* maxminddb_config.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5C71D40D01C0046963C /* maxminddb_config.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B8EAC67F1D40D01C0046963C /* maxminddb-compat-util.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */; };
 		B8EAC6801D40D01C0046963C /* maxminddb.c in Sources */ = {isa = PBXBuildFile; fileRef = B8EAC5FB1D40D01C0046963C /* maxminddb.c */; };
+		EB7139E3231EA6C2003CC2ED /* rule.h in Headers */ = {isa = PBXBuildFile; fileRef = EB7139E1231EA6C2003CC2ED /* rule.h */; };
+		EB7139E4231EA6C2003CC2ED /* rule.c in Sources */ = {isa = PBXBuildFile; fileRef = EB7139E2231EA6C2003CC2ED /* rule.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -870,6 +872,8 @@
 		B8EAC5C71D40D01C0046963C /* maxminddb_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxminddb_config.h; sourceTree = "<group>"; };
 		B8EAC5FA1D40D01C0046963C /* maxminddb-compat-util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "maxminddb-compat-util.h"; sourceTree = "<group>"; };
 		B8EAC5FB1D40D01C0046963C /* maxminddb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = maxminddb.c; sourceTree = "<group>"; };
+		EB7139E1231EA6C2003CC2ED /* rule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rule.h; sourceTree = "<group>"; };
+		EB7139E2231EA6C2003CC2ED /* rule.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rule.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1557,6 +1561,8 @@
 		B86B04431D17DABB00613014 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				EB7139E2231EA6C2003CC2ED /* rule.c */,
+				EB7139E1231EA6C2003CC2ED /* rule.h */,
 				04C5680E20273B4B0050A72F /* http.c */,
 				04C5680F20273B4B0050A72F /* tls.c */,
 				04C567FD2027200B0050A72F /* http.h */,
@@ -1743,6 +1749,7 @@
 				04B114A72026103300B1AF0C /* cache.h in Headers */,
 				B81887A01D2BFC1B00E41C89 /* ui_compat.h in Headers */,
 				B81887761D2BFC1B00E41C89 /* err.h in Headers */,
+				EB7139E3231EA6C2003CC2ED /* rule.h in Headers */,
 				B828478D1CEB10D400820456 /* urlmatch.h in Headers */,
 				04B116392026354A00B1AF0C /* x509.h in Headers */,
 				04B116112026354900B1AF0C /* ripemd160.h in Headers */,
@@ -2107,6 +2114,7 @@
 				B828479A1CEB110400820456 /* loadcfg.c in Sources */,
 				04B1148C2026103300B1AF0C /* local.c in Sources */,
 				B82D7D811CEC6BCE00357F5F /* config.m in Sources */,
+				EB7139E4231EA6C2003CC2ED /* rule.c in Sources */,
 				B82D7D6D1CEC6BCE00357F5F /* an_direct.m in Sources */,
 				B86B04E31D17DABB00613014 /* error.c in Sources */,
 				B828476C1CEB104E00820456 /* filters.c in Sources */,

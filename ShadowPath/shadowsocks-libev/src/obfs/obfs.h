@@ -79,4 +79,6 @@ void get_server_info(obfs *self, server_info *server);
 obfs * new_obfs();
 void dispose_obfs(obfs *self);
 
+int get_head_size(char *plaindata, int size, int def_size);
+
 #endif // _OBFS_OBFS_H

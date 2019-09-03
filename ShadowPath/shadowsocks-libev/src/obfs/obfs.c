@@ -208,7 +208,7 @@ obfs_class * new_obfs_class(char *plugin_name)
 
         return plugin;
     }
-    LOGE("Load obfs '%s' failed", plugin_name);
+    printf("Load obfs '%s' failed", plugin_name);
     return NULL;
 }
 
