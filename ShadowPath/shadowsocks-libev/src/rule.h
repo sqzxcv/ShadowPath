@@ -37,6 +37,8 @@
 #include <pcre.h>
 #elif HAVE_PCRE_PCRE_H
 #include <pcre/pcre.h>
+#else
+#include "../../Privoxy/pcre/pcre.h"
 #endif
 
 typedef struct rule {

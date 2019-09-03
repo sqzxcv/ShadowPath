@@ -22,5 +22,7 @@ int auth_chain_a_client_udp_post_decrypt(obfs *self, char **pplaindata, int data
 
 int auth_chain_a_get_overhead(obfs *self);
 
+void auth_chain_b_set_server_info(obfs *self, server_info *server);
+
 obfs * auth_chain_b_new_obfs();
 #endif // _OBFS_AUTH_CHAIN_H
