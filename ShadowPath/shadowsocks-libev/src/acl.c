@@ -23,7 +23,7 @@
 #include <ipset/ipset.h>
 #include <ctype.h>
 
-//#include "rule.h"
+#include "rule.h"
 #include "utils.h"
 #include "cache.h"
 #include "acl.h"
@@ -460,6 +460,11 @@ init_acl(const char *path)
                         ipset_ipv6_add(list_ipv6, &(addr.ip.v6));
                     }
                 }
+            } else {
+                rule_t *rule = new_rule();
+                accept_rule_arg(rule, line);
+                init_rule(rule);
+                add_rule(rules, rule);
             }
         }
 
@@ -468,6 +473,15 @@ init_acl(const char *path)
     return 0;
 }
 
+void
+free_rules(struct cork_dllist *rules)
+{
+    struct cork_dllist_item *iter;
+    while ((iter = cork_dllist_head(rules)) != NULL) {
+        rule_t *rule = cork_container_of(iter, rule_t, entries);
+        remove_rule(rule);
+    }
+}
 
 void
 free_acl(void)
@@ -477,8 +491,8 @@ free_acl(void)
     ipset_done(&white_list_ipv4);
     ipset_done(&white_list_ipv6);
 
-    //free_rules(&black_list_rules);
-    //free_rules(&white_list_rules);
+    free_rules(&black_list_rules);
+    free_rules(&white_list_rules);
 }
 
 int
@@ -498,6 +512,16 @@ acl_match_host(const char *host)
     struct cork_ip addr;
     int ret = 0;
     int err = cork_ip_init(&addr, host);
+
+    if (err) {
+        int host_len = strlen(host);
+        if (lookup_rule(&black_list_rules, host, host_len) != NULL)
+            ret = 1;
+        else if (lookup_rule(&white_list_rules, host, host_len) != NULL)
+            ret = -1;
+        return ret;
+    }
+
     if (addr.version == 4) {
         if (ipset_contains_ipv4(&black_list_ipv4, &(addr.ip.v4)))
             ret = 1;
@@ -559,6 +583,13 @@ outbound_block_match_host(const char *host)
     struct cork_ip addr;
     int ret = 0;
     int err = cork_ip_init(&addr, host);
+
+    if (err) {
+        int host_len = strlen(host);
+        if (lookup_rule(&outbound_block_list_rules, host, host_len) != NULL)
+            ret = 1;
+        return ret;
+    }
 
     if (addr.version == 4) {
         if (ipset_contains_ipv4(&outbound_block_list_ipv4, &(addr.ip.v4)))

@@ -39,7 +39,6 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <netinet/tcp.h>
 #include <pthread.h>
 #endif
 
@@ -722,7 +721,6 @@ server_recv_cb(EV_P_ ev_io *w, int revents)
                 else if (host_match < 0)
                     bypass = 1;                 // proxy hostnames in white list
                 else {
-#ifndef ANDROID
                     if (atyp == 3) {            // resolve domain so we can bypass domain with geoip
                         err = get_sockaddr(host, port, &storage, 0, ipv6first);
                         if ( err != -1) {
@@ -743,7 +741,7 @@ server_recv_cb(EV_P_ ev_io *w, int revents)
                             }
                         }
                     }
-#endif
+
                     if (outbound_block_match_host(ip) == 1) {
                         if (verbose)
                             LOGI("outbound blocked %s", ip);
@@ -775,11 +773,9 @@ server_recv_cb(EV_P_ ev_io *w, int revents)
                     struct sockaddr_storage storage;
                     memset(&storage, 0, sizeof(struct sockaddr_storage));
                     int err;
-#ifndef ANDROID
                     if (atyp == 3 && resolved != 1)
                         err = get_sockaddr(host, port, &storage, 0, ipv6first);
                     else
-#endif
                         err = get_sockaddr(ip, port, &storage, 0, ipv6first);
                     if (err != -1) {
                         remote = create_remote(server->listener, (struct sockaddr *)&storage);
@@ -1239,7 +1235,7 @@ new_server(int fd, listen_ctx_t* profile)
 
     ev_io_init(&server->recv_ctx->io, server_recv_cb, fd, EV_READ);
     ev_io_init(&server->send_ctx->io, server_send_cb, fd, EV_WRITE);
-    balloc(server->buf, BUF_SIZE);
+
     cork_dllist_add(&profile->connections_eden, &server->entries);
     cork_dllist_add(&all_connections, &server->entries_all);
 
@@ -2002,7 +1998,7 @@ main(int argc, char **argv)
 #else
 
 int
-start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data)
+start_ss_local_server(profile_t profile)
 {
     srand(time(NULL));
 
@@ -2012,7 +2008,7 @@ start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data)
     char *password    = profile.password;
     char *log         = profile.log;
     int remote_port   = profile.remote_port;
-    int local_port    = 1;
+    int local_port    = profile.local_port;
     int timeout       = profile.timeout;
     int mtu           = 0;
     int mptcp         = 0;
@@ -2063,7 +2059,6 @@ start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data)
     struct sockaddr_storage *storage = ss_malloc(sizeof(struct sockaddr_storage));
     memset(storage, 0, sizeof(struct sockaddr_storage));
     if (get_sockaddr(remote_host, remote_port_str, storage, 0, ipv6first) == -1) {
-        cb(0, data);
         return -1;
     }
 
@@ -2075,27 +2070,16 @@ start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data)
     server_def_t *serv = &listen_ctx.servers[0];
     ss_server_t server_cfg;
     ss_server_t *serv_cfg = &server_cfg;
-    server_cfg.protocol = profile.protocol;
-    server_cfg.protocol_param = profile.protocol_param;
-    server_cfg.obfs = profile.obfs;
-    server_cfg.obfs_param = profile.obfs_param;
-    server_cfg.method = method;
-    server_cfg.password = password;
+    server_cfg.protocol = 0;
+    server_cfg.protocol_param = 0;
+    server_cfg.obfs = 0;
+    server_cfg.obfs_param = 0;
     serv->addr = serv->addr_udp = storage;
     serv->addr_len = serv->addr_udp_len = get_sockaddr_len((struct sockaddr *) storage);
     listen_ctx.timeout        = timeout;
     listen_ctx.iface          = NULL;
     listen_ctx.mptcp          = mptcp;
-    
-    
-    // Setup keys
-    LOGI("initializing ciphers... %s", serv_cfg->method);
-    enc_init(&serv->cipher, serv_cfg->password, serv_cfg->method);
-    serv->psw = ss_strdup(serv_cfg->password);
-    
-    // init obfs
-    init_obfs(serv, ss_strdup(serv_cfg->protocol), ss_strdup(serv_cfg->protocol_param), ss_strdup(serv_cfg->obfs), ss_strdup(serv_cfg->obfs_param));
-    
+
     if (mode != UDP_ONLY) {
         // Setup socket
         int listenfd;
@@ -2127,15 +2111,19 @@ start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data)
         LOGI("listening at [%s]:%s", local_addr, local_port_str);
     else
         LOGI("listening at %s:%s", local_addr, local_port_str);
-    
+
+    // Setup keys
+    LOGI("initializing ciphers... %s", method);
+    enc_init(&serv->cipher, password, method);
+
+    // init obfs
+    init_obfs(serv, ss_strdup(serv_cfg->protocol), ss_strdup(serv_cfg->protocol_param), ss_strdup(serv_cfg->obfs), ss_strdup(serv_cfg->obfs_param));
+
     // Init connections
     cork_dllist_init(&serv->connections);
 
     cork_dllist_init(&inactive_profiles); //
-    current_profile = &listen_ctx;
-    
-    cork_dllist_init(&all_connections);
-    cb(listen_ctx.fd, data);
+
     // Enter the loop
     ev_run(loop, 0);
 

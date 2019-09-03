@@ -1,10 +1,9 @@
 /* -*- coding: utf-8 -*-
  * ----------------------------------------------------------------------
- * Copyright © 2011-2013, RedJack, LLC.
+ * Copyright © 2011-2015, RedJack, LLC.
  * All rights reserved.
  *
- * Please see the COPYING file in this distribution for license
- * details.
+ * Please see the COPYING file in this distribution for license details.
  * ----------------------------------------------------------------------
  */
 
@@ -28,6 +27,11 @@
 /* Otherwise autodetect! */
 
 
+/**** VERSION ****/
+
+#include <libcork/config/version.h>
+
+
 /**** ARCHITECTURES ****/
 
 #include <libcork/config/arch.h>
@@ -40,8 +44,8 @@
 #include <sys/param.h>
 #endif
 
-#if defined(__linux) || defined(__CYGWIN__)
-/* Do some Linux-specific autodetection. */
+#if defined(__linux) || defined(__CYGWIN__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
+/* Do some Linux, kFreeBSD or GNU/Hurd specific autodetection. */
 #include <libcork/config/linux.h>
 
 #elif defined(__APPLE__) && defined(__MACH__)

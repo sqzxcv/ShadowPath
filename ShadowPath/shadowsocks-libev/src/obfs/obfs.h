@@ -9,7 +9,6 @@
 
 #include <stdint.h>
 #include <unistd.h>
-#include "../encrypt.h"
 
 #define OBFS_HMAC_SHA1_LEN 10
 

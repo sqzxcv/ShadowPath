@@ -1,5 +1,5 @@
 /*
- * local.h - Define the client's buffers and callbacks
+ * tunnel.h - Define tunnel's buffers and callbacks
  *
  * Copyright (C) 2013 - 2016, Max Lv <max.c.lv@gmail.com>
  *
@@ -20,33 +20,34 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LOCAL_H
-#define _LOCAL_H
+#ifndef _TUNNEL_H
+#define _TUNNEL_H
 
 #include <ev.h>
-#include <libcork/ds.h>
-
 #include "encrypt.h"
+#include "obfs/obfs.h"
 #include "jconf.h"
-#include "protocol.h"
 
 #include "common.h"
 
-// use this as a profile or environment
-typedef struct listen_ctx{
+typedef struct listen_ctx {
     ev_io io;
     ss_addr_t tunnel_addr;
-
-    struct cork_dllist_item entries; // for inactive profile list
-    struct cork_dllist connections_eden; // For connections just created but not attach to a server
-
     char *iface;
+    int remote_num;
+    int method;
     int timeout;
     int fd;
     int mptcp;
+    struct sockaddr **remote_addr;
 
-    int server_num;
-    server_def_t servers[MAX_SERVER_NUM];
+    // SSR
+    char *protocol_name;
+    char *protocol_param;
+    char *obfs_name;
+    char *obfs_param;
+    void **list_protocol_global;
+    void **list_obfs_global;
 } listen_ctx_t;
 
 typedef struct server_ctx {
@@ -54,6 +55,24 @@ typedef struct server_ctx {
     int connected;
     struct server *server;
 } server_ctx_t;
+
+typedef struct server {
+    int fd;
+    buffer_t *buf;
+    ssize_t buf_capacity;
+    struct enc_ctx *e_ctx;
+    struct enc_ctx *d_ctx;
+    struct server_ctx *recv_ctx;
+    struct server_ctx *send_ctx;
+    struct remote *remote;
+    ss_addr_t destaddr;
+
+    // SSR
+    obfs *protocol;
+    obfs *obfs;
+    obfs_class *protocol_plugin;
+    obfs_class *obfs_plugin;
+} server_t;
 
 typedef struct remote_ctx {
     ev_io io;
@@ -65,38 +84,14 @@ typedef struct remote_ctx {
 typedef struct remote {
     int fd;
     buffer_t *buf;
-    remote_ctx_t *recv_ctx;
-    remote_ctx_t *send_ctx;
-    uint32_t counter;
+    ssize_t buf_capacity;
+    struct remote_ctx *recv_ctx;
+    struct remote_ctx *send_ctx;
     struct server *server;
-
-    int direct;
-    struct { // direct = 1
-        struct sockaddr_storage addr;
-        int addr_len;
-    } direct_addr;
-} remote_t;
-
-typedef struct server {
-    int fd;
-    char stage;
-    enc_ctx_t *e_ctx;
-    enc_ctx_t *d_ctx;
-    server_ctx_t *recv_ctx;
-    server_ctx_t *send_ctx;
-    listen_ctx_t *listener;
-    remote_t *remote;
-
-    buffer_t *buf;
-
-    struct cork_dllist_item entries;
-    struct cork_dllist_item entries_all; // for all_connections
-
-    server_def_t *server_env;
+    uint32_t counter;
 
     // SSR
-    obfs *protocol;
-    obfs *obfs;
-} server_t;
+    int remote_index;
+} remote_t;
 
-#endif // _LOCAL_H
+#endif // _TUNNEL_H

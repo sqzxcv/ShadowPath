@@ -31,10 +31,7 @@ typedef struct {
     int remote_port;      // port number of remote server
     int local_port;       // port number of local server
     int timeout;          // connection timeout
-    char *protocol;
-    char *protocol_param;
-    char *obfs;
-    char *obfs_param;
+
     /*  Optional, set NULL if not valid   */
     char *acl;            // file path to acl
     char *log;            // file path to log
@@ -67,20 +64,18 @@ typedef struct {
 extern "C" {
 #endif
 
-    typedef void (*shadowsocks_cb) (int fd, void*);
-    
-    /*
-     * Create and start a shadowsocks local server.
-     *
-     * Calling this function will block the current thread forever if the server
-     * starts successfully.
-     *
-     * Make sure start the server in a seperate process to avoid any potential
-     * memory and socket leak.
-     *
-     * If failed, -1 is returned. Errors will output to the log file.
-     */
-    int start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data);
+/*
+ * Create and start a shadowsocks local server.
+ *
+ * Calling this function will block the current thread forever if the server
+ * starts successfully.
+ *
+ * Make sure start the server in a separate process to avoid any potential
+ * memory and socket leak.
+ *
+ * If failed, -1 is returned. Errors will output to the log file.
+ */
+int start_ss_local_server(profile_t profile);
 
 #ifdef __cplusplus
 }

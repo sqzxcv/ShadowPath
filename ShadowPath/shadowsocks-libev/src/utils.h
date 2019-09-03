@@ -52,10 +52,10 @@
 
 #define USE_TTY()
 #define USE_SYSLOG(ident)
-#define LOGI(format,...)                                                \
+#define LOGI(...)                                                \
     ((void)__android_log_print(ANDROID_LOG_DEBUG, "shadowsocks", \
                                __VA_ARGS__))
-#define LOGE(format,...)                                                \
+#define LOGE(...)                                                \
     ((void)__android_log_print(ANDROID_LOG_ERROR, "shadowsocks", \
                                __VA_ARGS__))
 

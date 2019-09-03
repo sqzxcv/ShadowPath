@@ -5,7 +5,7 @@
 
 #include "tls1.2_ticket.h"
 #include "obfsutil.h"
-#include "../encrypt.h"
+#include "encrypt.h"
 
 typedef struct tls12_ticket_auth_global_data {
     uint8_t local_client_id[32];
