@@ -1998,7 +1998,7 @@ main(int argc, char **argv)
 #else
 
 int
-start_ss_local_server(profile_t profile)
+start_ss_local_server(profile_t profile, shadowsocks_cb cb, void *data)
 {
     srand(time(NULL));
 
@@ -2059,6 +2059,7 @@ start_ss_local_server(profile_t profile)
     struct sockaddr_storage *storage = ss_malloc(sizeof(struct sockaddr_storage));
     memset(storage, 0, sizeof(struct sockaddr_storage));
     if (get_sockaddr(remote_host, remote_port_str, storage, 0, ipv6first) == -1) {
+        cb(0, data);
         return -1;
     }
 
@@ -2070,10 +2071,10 @@ start_ss_local_server(profile_t profile)
     server_def_t *serv = &listen_ctx.servers[0];
     ss_server_t server_cfg;
     ss_server_t *serv_cfg = &server_cfg;
-    server_cfg.protocol = 0;
-    server_cfg.protocol_param = 0;
-    server_cfg.obfs = 0;
-    server_cfg.obfs_param = 0;
+    server_cfg.protocol = profile.protocol;
+    server_cfg.protocol_param = profile.protocol_param;
+    server_cfg.obfs = profile.obfs;
+    server_cfg.obfs_param = profile.obfs_param;
     serv->addr = serv->addr_udp = storage;
     serv->addr_len = serv->addr_udp_len = get_sockaddr_len((struct sockaddr *) storage);
     listen_ctx.timeout        = timeout;
@@ -2121,6 +2122,8 @@ start_ss_local_server(profile_t profile)
 
     // Init connections
     cork_dllist_init(&serv->connections);
+    
+    cb(listen_ctx.fd, data);
 
     cork_dllist_init(&inactive_profiles); //
 
