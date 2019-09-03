@@ -113,7 +113,6 @@
 		04B116372026354A00B1AF0C /* md.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B115F52026354600B1AF0C /* md.h */; };
 		04B116382026354A00B1AF0C /* pem.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B115F62026354600B1AF0C /* pem.h */; };
 		04B116392026354A00B1AF0C /* x509.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B115F72026354700B1AF0C /* x509.h */; };
-		04B1163A2026354A00B1AF0C /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 04B115F82026354700B1AF0C /* LICENSE */; };
 		04B1163B2026354A00B1AF0C /* des.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B115F92026354800B1AF0C /* des.h */; };
 		04B1163C2026354A00B1AF0C /* x509_crl.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B115FA2026354800B1AF0C /* x509_crl.h */; };
 		04B1163D2026354A00B1AF0C /* memory_buffer_alloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B115FB2026354800B1AF0C /* memory_buffer_alloc.h */; };
@@ -124,7 +123,6 @@
 		04C568022027200C0050A72F /* tls.h in Headers */ = {isa = PBXBuildFile; fileRef = 04C567FE2027200B0050A72F /* tls.h */; };
 		04C5681020273B4C0050A72F /* http.c in Sources */ = {isa = PBXBuildFile; fileRef = 04C5680E20273B4B0050A72F /* http.c */; };
 		04C5681120273B4C0050A72F /* tls.c in Sources */ = {isa = PBXBuildFile; fileRef = 04C5680F20273B4B0050A72F /* tls.c */; };
-		B81887591D2BFC1B00E41C89 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B81887091D2BFC1B00E41C89 /* LICENSE */; };
 		B818875A1D2BFC1B00E41C89 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = B818870B1D2BFC1B00E41C89 /* aes.h */; };
 		B818875B1D2BFC1B00E41C89 /* asn1.h in Headers */ = {isa = PBXBuildFile; fileRef = B818870C1D2BFC1B00E41C89 /* asn1.h */; };
 		B818875C1D2BFC1B00E41C89 /* asn1_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = B818870D1D2BFC1B00E41C89 /* asn1_mac.h */; };
@@ -2013,6 +2011,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -2043,9 +2042,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04B1163A2026354A00B1AF0C /* LICENSE in Resources */,
 				04B114A92026103300B1AF0C /* ssrlink.py in Resources */,
-				B81887591D2BFC1B00E41C89 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
